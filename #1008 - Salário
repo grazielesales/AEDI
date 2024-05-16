@@ -1,0 +1,24 @@
+//Problema que calcula o produto das horas trabalhas e o valor por hora, para cada funcionário representado por um número inteiro
+
+#include <stdio.h>
+
+int main() {
+
+  //Declarar variavéis
+    int func, horas;
+    float salariohora, calculo;
+  
+  //Receber valores
+    scanf("%i", &func);
+    scanf("%i", &horas);
+    scanf("%f", &salariohora);
+
+  //Calculo produto das horas trabalhas e o valor do salário por hora
+  calculo = horas * salariohora;
+
+  //Imprimir o resultado
+    printf("NUMBER = %i\n", func);
+    printf("SALARY = U$ %0.2f\n", calculo);
+
+  return 0;
+}

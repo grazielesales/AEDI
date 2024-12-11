@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// --- Função para gerar números aleatórios ---
+void generateRandomArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] = rand() % 100000; // Números entre 0 e 99999
+    }
+}
+
+// --- Algoritmo InsertionSort ---
+void insertionSort(int arr[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+// --- Algoritmo MergeSort ---
+void merge(int arr[], int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    int L[n1], R[n2];
+    for (int i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(int arr[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+        merge(arr, l, m, r);
+    }
+}
+
+// --- Algoritmo QuickSort ---
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = (low - 1);
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    int temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return (i + 1);
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int main() {
+    int sizes[] = {20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000, 220000, 240000, 260000, 280000, 300000, 320000, 340000, 360000, 380000, 400000};
+    int n_sizes = sizeof(sizes) / sizeof(sizes[0]);
+    int *arr, *temp;
+
+    // Inicializar o gerador de números aleatórios
+    srand(time(NULL));
+
+    printf("n\tInsertionSort\tMergeSort\tQuickSort\n");
+
+    for (int i = 0; i < n_sizes; i++) {
+        int n = sizes[i];
+        arr = (int *)malloc(n * sizeof(int));
+        temp = (int *)malloc(n * sizeof(int));
+
+        // Gerar array aleatório
+        generateRandomArray(arr, n);
+
+        // Medir tempo para InsertionSort
+        for (int j = 0; j < n; j++) temp[j] = arr[j];
+        clock_t start = clock();
+        insertionSort(temp, n);
+        double insertionTime = (double)(clock() - start) / CLOCKS_PER_SEC;
+
+        // Medir tempo para MergeSort
+        for (int j = 0; j < n; j++) temp[j] = arr[j];
+        start = clock();
+        mergeSort(temp, 0, n - 1);
+        double mergeTime = (double)(clock() - start) / CLOCKS_PER_SEC;
+
+        // Medir tempo para QuickSort
+        for (int j = 0; j < n; j++) temp[j] = arr[j];
+        start = clock();
+        quickSort(temp, 0, n - 1);
+        double quickTime = (double)(clock() - start) / CLOCKS_PER_SEC;
+
+        // Exibir os resultados
+        printf("%d\t%.6f\t%.6f\t%.6f\n", n, insertionTime, mergeTime, quickTime);
+
+        // Liberar memória
+        free(arr);
+        free(temp);
+    }
+
+    return 0;
+}
